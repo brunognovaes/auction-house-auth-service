@@ -5,16 +5,21 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { ConfigModule } from '@nestjs/config';
 
-const mockUserLogin = {
-  email: 'bruno.gomes@qesh.ai',
+const mockRegisteredUser = {
+  email: 'bruno.gomes@gmail.com',
+  password: '123456',
+};
+
+const mockNotRegisteredUser = {
+  email: 'bruno.gomes@hotmail.com',
   password: '123456',
 };
 
 const mockUsersRepository = [
   {
     id: 1,
-    email: 'bruno.gomes@qesh.ai',
-    password: 'bcryptpassword',
+    email: 'bruno.gomes@gmail.com',
+    password: 'hash',
     active: true,
     role: 'user',
   },
@@ -42,16 +47,24 @@ describe('AuthenticationService', () => {
     service = module.get<AuthenticationService>(AuthenticationService);
   });
 
-  it('it should compare if the incoming user is authenticated', async () => {
+  it('should authenticate a valid user', async () => {
     const token = 'validtoken';
-    jest
+    const bcryptSpy = jest
       .spyOn(bcrypt, 'compare')
       .mockImplementation(() => Promise.resolve(true));
-    jest.spyOn(jwt, 'sign').mockImplementation(() => token);
+    const jwtSpy = jest.spyOn(jwt, 'sign').mockImplementation(() => token);
 
-    const response = await service.authenticate(mockUserLogin);
+    const response = await service.authenticate(mockRegisteredUser);
 
     expect(response).toBeDefined();
     expect(response).toBe(token);
+    expect(bcryptSpy).toHaveBeenCalledTimes(1);
+    expect(jwtSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not authenticate a not registered user', async () => {
+    const response = await service.authenticate(mockNotRegisteredUser);
+
+    expect(response).toBeFalsy();
   });
 });
