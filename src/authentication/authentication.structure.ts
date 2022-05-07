@@ -6,7 +6,7 @@ export interface IUser {
   role: string;
 }
 
-export interface IAuthenticationServiceArguments {
+export interface IUserLogin {
   email: string;
   password: string;
 }
@@ -16,5 +16,5 @@ export interface IAuthenticationRepository {
 }
 
 export interface IAuthenticationService {
-  authenticate(data: IAuthenticationServiceArguments): Promise<string>;
+  authenticate(data: IUserLogin): Promise<string>;
 }

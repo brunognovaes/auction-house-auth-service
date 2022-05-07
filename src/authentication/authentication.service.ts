@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   IAuthenticationRepository,
   IAuthenticationService,
-  IAuthenticationServiceArguments,
+  IUserLogin,
 } from './authentication.structure';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
@@ -14,7 +14,7 @@ export class AuthenticationService implements IAuthenticationService {
     private usersRepository: IAuthenticationRepository,
   ) {}
 
-  async authenticate(data: IAuthenticationServiceArguments): Promise<string> {
+  async authenticate(data: IUserLogin): Promise<string> {
     const user = await this.usersRepository.findOneByEmail(data.email);
     if (user?.active) {
       const result = await bcrypt.compare(data.password, user.password);
