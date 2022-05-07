@@ -1,3 +1,8 @@
+export interface IError {
+  code: number;
+  message: string;
+}
+
 export interface IUser {
   id: number;
   email: string;
@@ -16,5 +21,5 @@ export interface IAuthenticationRepository {
 }
 
 export interface IAuthenticationService {
-  authenticate(data: IUserLogin): Promise<string>;
+  authenticate(data: IUserLogin): Promise<string | IError>;
 }
