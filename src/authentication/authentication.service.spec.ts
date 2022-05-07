@@ -47,6 +47,10 @@ describe('AuthenticationService', () => {
     service = module.get<AuthenticationService>(AuthenticationService);
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should authenticate a valid user', async () => {
     const token = 'validtoken';
     const bcryptSpy = jest
@@ -66,5 +70,19 @@ describe('AuthenticationService', () => {
     const response = await service.authenticate(mockNotRegisteredUser);
 
     expect(response).toBeFalsy();
+  });
+
+  it('should return a token with correct properties', async () => {
+    jest
+      .spyOn(bcrypt, 'compare')
+      .mockImplementation(() => Promise.resolve(true));
+
+    const response = await service.authenticate(mockRegisteredUser);
+    const { user_id, role } = jwt.verify(response, process.env.SECRET);
+
+    expect(user_id).toBeDefined();
+    expect(role).toBeDefined();
+    expect(user_id).toBe(mockUsersRepository[0].id);
+    expect(role).toBe(mockUsersRepository[0].role);
   });
 });
