@@ -4,6 +4,7 @@ import { AuthenticationRepositoryMock } from './authentication.repository.mock';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { ConfigModule } from '@nestjs/config';
+import errors from './authentication.errors';
 
 const mockRegisteredUser = {
   email: 'bruno.gomes@gmail.com',
@@ -15,12 +16,24 @@ const mockNotRegisteredUser = {
   password: '123456',
 };
 
+const mockInactiveUser = {
+  email: 'bruno.gomes@yahoo.com.br',
+  password: '123456',
+};
+
 const mockUsersRepository = [
   {
     id: 1,
     email: 'bruno.gomes@gmail.com',
     password: 'hash',
     active: true,
+    role: 'user',
+  },
+  {
+    id: 2,
+    email: 'bruno.gomes@yahoo.com.br',
+    password: 'hash',
+    active: false,
     role: 'user',
   },
 ];
@@ -66,10 +79,32 @@ describe('AuthenticationService', () => {
     expect(jwtSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should not authenticate a not registered user', async () => {
+  it('should not authenticate a non registered user', async () => {
     const response = await service.authenticate(mockNotRegisteredUser);
 
-    expect(response).toBeFalsy();
+    expect(response).toBe(errors.userNotFound);
+  });
+
+  it('should not authenticate an user when passed invalid credentials', async () => {
+    jest
+      .spyOn(bcrypt, 'compare')
+      .mockImplementation(() => Promise.resolve(false));
+
+    const response = await service.authenticate(mockRegisteredUser);
+
+    expect(response).toBeDefined();
+    expect(response).toBe(errors.invalidCredentials);
+  });
+
+  it('should not authenticate an user when is inactive', async () => {
+    jest
+      .spyOn(bcrypt, 'compare')
+      .mockImplementation(() => Promise.resolve(true));
+
+    const response = await service.authenticate(mockInactiveUser);
+
+    expect(response).toBeDefined();
+    expect(response).toBe(errors.userInactive);
   });
 
   it('should return a token with correct properties', async () => {
