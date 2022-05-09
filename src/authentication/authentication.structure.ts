@@ -30,4 +30,5 @@ export interface IVerfiyReturn {
 export interface IAuthenticationService {
   authenticate(data: IUserLogin): Promise<string | IError>;
   verify(token: string): Promise<IVerfiyReturn>;
+  createOne(user: IUserLogin): Promise<IUser>;
 }
