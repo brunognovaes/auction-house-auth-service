@@ -42,12 +42,13 @@ export class AuthenticationService implements IAuthenticationService {
   }
 
   async verify(token: string): Promise<IVerfiyReturn> {
-    const { user_id: userId } = jwt.verify(token, process.env.SECRET);
+    const response = jwt.verify(token, process.env.SECRET);
+    const userId = response?.user_id;
     const user = await this.usersRepository.findOneById(userId);
 
     return {
       authenticated: !!user,
-      role: user?.role,
+      role: user?.role || null,
     };
   }
 }

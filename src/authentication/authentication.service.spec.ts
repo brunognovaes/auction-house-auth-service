@@ -121,12 +121,21 @@ describe('AuthenticationService', () => {
     expect(role).toBe(mockUsersRepository[0].role);
   });
 
-  it('should verify correctly when passed a valid jwt', async () => {
+  it('should return authenticated when passed a valid jwt', async () => {
     const token = jwt.sign({ user_id: 1, role: 'user' }, process.env.SECRET);
-    const responseMock = { autheticated: true, role: 'user' };
+    const responseMock = { authenticated: true, role: 'user' };
     const response = await service.verify(token);
 
     expect(response).toBeDefined();
-    expect(response).toBe(responseMock);
+    expect(response).toEqual(responseMock);
+  });
+
+  it('should not return authenticated when passed a valid jwt', async () => {
+    const token = jwt.sign('invalid token', process.env.SECRET);
+    const responseMock = { authenticated: false, role: null };
+    const response = await service.verify(token);
+
+    expect(response).toBeDefined();
+    expect(response).toEqual(responseMock);
   });
 });
