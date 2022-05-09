@@ -138,4 +138,19 @@ describe('AuthenticationService', () => {
     expect(response).toBeDefined();
     expect(response).toEqual(responseMock);
   });
+
+  it('should create an user', async () => {
+    const newUser = {
+      email: 'new.bruno.gomes@gmail.com',
+      password: '123456',
+    };
+    const response = service.create(newUser);
+
+    expect(response).toBeDefined();
+    expect(response).toHaveProperty('id');
+    expect(response).toHaveProperty('email', newUser.email);
+    expect(response).toHaveProperty('password', newUser.password);
+    expect(response).toHaveProperty('active', true);
+    expect(response).toHaveProperty('role', 'user');
+  });
 });
