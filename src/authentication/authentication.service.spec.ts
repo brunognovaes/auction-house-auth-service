@@ -4,7 +4,7 @@ import { AuthenticationRepositoryMock } from './authentication.repository.mock';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { ConfigModule } from '@nestjs/config';
-import errors, { AuthError } from './authentication.errors';
+import authErrors from './authentication.errors';
 
 const mockRegisteredUser = {
   email: 'bruno.gomes@gmail.com',
@@ -82,7 +82,7 @@ describe('AuthenticationService', () => {
   it('should not authenticate a non registered user', async () => {
     expect(async () => {
       await service.authenticate(mockNotRegisteredUser);
-    }).rejects.toBe(errors.USER_NOT_FOUND);
+    }).rejects.toBe(authErrors.USER_NOT_FOUND);
   });
 
   it('should not authenticate an user when passed invalid credentials', async () => {
@@ -92,7 +92,7 @@ describe('AuthenticationService', () => {
 
     expect(async () => {
       await service.authenticate(mockRegisteredUser);
-    }).rejects.toBe(errors.INVALID_CREDENTIALS);
+    }).rejects.toBe(authErrors.INVALID_CREDENTIALS);
   });
 
   it('should not authenticate an user when is inactive', async () => {
@@ -102,7 +102,7 @@ describe('AuthenticationService', () => {
 
     expect(async () => {
       await service.authenticate(mockInactiveUser);
-    }).rejects.toBe(errors.USER_INACTIVE);
+    }).rejects.toBe(authErrors.USER_INACTIVE);
   });
 
   it('should return a token with correct properties', async () => {

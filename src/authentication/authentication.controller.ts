@@ -2,24 +2,28 @@ import {
   Body,
   Controller,
   HttpCode,
+  HttpException,
   HttpStatus,
-  Inject,
   Injectable,
   Post,
 } from '@nestjs/common';
 import { IError } from 'src/errors/error';
-import { IAuthenticationService, IUserLogin } from './authentication.structure';
+import { AuthenticationService } from './authentication.service';
+import { IUserLogin } from './authentication.structure';
 
 @Injectable()
 @Controller('auth')
 export class AuthenticationController {
-  constructor(
-    @Inject('USERS_SERVICE') private usersService: IAuthenticationService,
-  ) {}
+  constructor(private usersService: AuthenticationService) {}
 
   @Post()
   @HttpCode(HttpStatus.OK)
   async authenticate(@Body() data: IUserLogin): Promise<string | IError> {
-    const response = await this.usersService.authenticate(data);
+    try {
+      const response = await this.usersService.authenticate(data);
+      return response;
+    } catch (error: any) {
+      throw new HttpException(error.message, error.code);
+    }
   }
 }

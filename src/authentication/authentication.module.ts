@@ -4,12 +4,6 @@ import { AuthenticationService } from './authentication.service';
 
 @Module({
   controllers: [AuthenticationController],
-  providers: [
-    AuthenticationService,
-    {
-      provide: 'USERS_SERVICE',
-      useClass: AuthenticationService,
-    },
-  ],
+  providers: [AuthenticationService],
 })
 export class AuthenticationModule {}
