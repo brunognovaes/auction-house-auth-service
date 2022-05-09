@@ -147,10 +147,6 @@ describe('AuthenticationService', () => {
     const response = await service.create(newUser);
 
     expect(response).toBeDefined();
-    expect(response).toHaveProperty('id');
-    expect(response).toHaveProperty('email', newUser.email);
-    expect(response).not.toHaveProperty('password', newUser.password);
-    expect(response).toHaveProperty('active', true);
-    expect(response).toHaveProperty('role', 'user');
+    expect(response).toBe(true);
   });
 });
