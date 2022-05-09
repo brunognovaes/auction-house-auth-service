@@ -3,7 +3,6 @@ import {
   IAuthenticationRepository,
   IAuthenticationService,
   IError,
-  IUser,
   IUserLogin,
   IVerifyReturn,
 } from './authentication.structure';
