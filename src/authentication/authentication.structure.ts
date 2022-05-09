@@ -1,7 +1,4 @@
-export interface IError {
-  code: number;
-  message: string;
-}
+import { IError } from 'src/errors/error';
 
 export interface IUser {
   id: number;

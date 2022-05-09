@@ -1,17 +1,21 @@
 import { HttpStatus } from '@nestjs/common';
-import { IError } from './authentication.structure';
+import { AppError } from 'src/errors/error';
+
+export class AuthError extends AppError {
+  name: string;
+  code: number;
+  message: string;
+
+  constructor(code: number, message: string) {
+    super('AuthError', code, message);
+  }
+}
 
 export default {
-  userNotFound: {
-    code: HttpStatus.NOT_FOUND,
-    message: 'Invalid e-mail',
-  } as IError,
-  invalidCredentials: {
-    code: HttpStatus.UNAUTHORIZED,
-    message: 'Invalid password',
-  } as IError,
-  userInactive: {
-    code: HttpStatus.FORBIDDEN,
-    message: 'User inactive',
-  } as IError,
+  USER_NOT_FOUND: new AuthError(HttpStatus.NOT_FOUND, 'Invalid e-mail'),
+  INVALID_CREDENTIALS: new AuthError(
+    HttpStatus.UNAUTHORIZED,
+    'Invalid password',
+  ),
+  USER_INACTIVE: new AuthError(HttpStatus.FORBIDDEN, 'User inactive'),
 };

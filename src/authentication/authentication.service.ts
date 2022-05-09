@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   IAuthenticationRepository,
   IAuthenticationService,
-  IError,
   IUserLogin,
   IVerifyReturn,
 } from './authentication.structure';
@@ -17,20 +16,20 @@ export class AuthenticationService implements IAuthenticationService {
     private usersRepository: IAuthenticationRepository,
   ) {}
 
-  async authenticate(data: IUserLogin): Promise<string | IError> {
+  async authenticate(data: IUserLogin): Promise<string> {
     const user = await this.usersRepository.findOneByEmail(data.email);
 
     if (!user) {
-      return errors.userNotFound;
+      throw errors.USER_NOT_FOUND;
     }
     if (!user.active) {
-      return errors.userInactive;
+      throw errors.USER_INACTIVE;
     }
 
     const result = await bcrypt.compare(data.password, user.password);
 
     if (!result) {
-      return errors.invalidCredentials;
+      throw errors.INVALID_CREDENTIALS;
     }
 
     const token = jwt.sign(
