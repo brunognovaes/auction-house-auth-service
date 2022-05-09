@@ -9,4 +9,9 @@ export class AuthenticationRepositoryMock implements IAuthenticationRepository {
     const result = this.users.find((user) => user.email === email);
     return result;
   }
+
+  async findOneById(id: number): Promise<IUser | null> {
+    const result = this.users.find((user) => user.id === id);
+    return result;
+  }
 }

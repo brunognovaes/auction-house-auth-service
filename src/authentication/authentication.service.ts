@@ -4,6 +4,7 @@ import {
   IAuthenticationService,
   IError,
   IUserLogin,
+  IVerfiyReturn,
 } from './authentication.structure';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
@@ -38,5 +39,15 @@ export class AuthenticationService implements IAuthenticationService {
     );
 
     return token;
+  }
+
+  async verify(token: string): Promise<IVerfiyReturn> {
+    const { user_id: userId } = jwt.verify(token, process.env.SECRET);
+    const user = await this.usersRepository.findOneById(userId);
+
+    return {
+      authenticated: !!user,
+      role: user?.role,
+    };
   }
 }

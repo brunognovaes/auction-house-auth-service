@@ -18,8 +18,15 @@ export interface IUserLogin {
 
 export interface IAuthenticationRepository {
   findOneByEmail(email: string): Promise<IUser | null>;
+  findOneById(id: number): Promise<IUser | null>;
+}
+
+export interface IVerfiyReturn {
+  authenticated: boolean;
+  role: string;
 }
 
 export interface IAuthenticationService {
   authenticate(data: IUserLogin): Promise<string | IError>;
+  verify(token: string): Promise<IVerfiyReturn>;
 }
