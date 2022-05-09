@@ -53,11 +53,8 @@ export class AuthenticationService implements IAuthenticationService {
     };
   }
 
-  async create(user: IUserLogin): Promise<IVerifyReturn> {
-    const response = await this.usersRepository.createOne(user);
-    return {
-      authenticated: !!response,
-      role: response?.role || null,
-    };
+  async create(user: IUserLogin): Promise<true> {
+    await this.usersRepository.createOne(user);
+    return true;
   }
 }
