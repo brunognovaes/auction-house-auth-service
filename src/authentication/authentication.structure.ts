@@ -19,6 +19,7 @@ export interface IUserLogin {
 export interface IAuthenticationRepository {
   findOneByEmail(email: string): Promise<IUser | null>;
   findOneById(id: number): Promise<IUser | null>;
+  createOne(user: IUserLogin): Promise<IUser>;
 }
 
 export interface IVerfiyReturn {

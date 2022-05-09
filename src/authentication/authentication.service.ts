@@ -3,6 +3,7 @@ import {
   IAuthenticationRepository,
   IAuthenticationService,
   IError,
+  IUser,
   IUserLogin,
   IVerfiyReturn,
 } from './authentication.structure';
@@ -50,5 +51,11 @@ export class AuthenticationService implements IAuthenticationService {
       authenticated: !!user,
       role: user?.role || null,
     };
+  }
+
+  async createOne(user: IUserLogin): Promise<IUser> {
+    const response = await this.usersRepository.createOne(user);
+    delete response.password;
+    return response;
   }
 }
