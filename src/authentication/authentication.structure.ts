@@ -22,13 +22,13 @@ export interface IAuthenticationRepository {
   createOne(user: IUserLogin): Promise<IUser>;
 }
 
-export interface IVerfiyReturn {
+export interface IVerifyReturn {
   authenticated: boolean;
   role: string;
 }
 
 export interface IAuthenticationService {
   authenticate(data: IUserLogin): Promise<string | IError>;
-  verify(token: string): Promise<IVerfiyReturn>;
-  createOne(user: IUserLogin): Promise<IUser>;
+  verify(token: string): Promise<IVerifyReturn>;
+  create(user: IUserLogin): Promise<IVerifyReturn>;
 }

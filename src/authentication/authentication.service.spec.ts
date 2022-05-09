@@ -144,12 +144,12 @@ describe('AuthenticationService', () => {
       email: 'new.bruno.gomes@gmail.com',
       password: '123456',
     };
-    const response = service.create(newUser);
+    const response = await service.create(newUser);
 
     expect(response).toBeDefined();
     expect(response).toHaveProperty('id');
     expect(response).toHaveProperty('email', newUser.email);
-    expect(response).toHaveProperty('password', newUser.password);
+    expect(response).not.toHaveProperty('password', newUser.password);
     expect(response).toHaveProperty('active', true);
     expect(response).toHaveProperty('role', 'user');
   });

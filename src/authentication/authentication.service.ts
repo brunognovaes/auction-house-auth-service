@@ -5,7 +5,7 @@ import {
   IError,
   IUser,
   IUserLogin,
-  IVerfiyReturn,
+  IVerifyReturn,
 } from './authentication.structure';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
@@ -42,7 +42,7 @@ export class AuthenticationService implements IAuthenticationService {
     return token;
   }
 
-  async verify(token: string): Promise<IVerfiyReturn> {
+  async verify(token: string): Promise<IVerifyReturn> {
     const response = jwt.verify(token, process.env.SECRET);
     const userId = response?.user_id;
     const user = await this.usersRepository.findOneById(userId);
@@ -53,9 +53,11 @@ export class AuthenticationService implements IAuthenticationService {
     };
   }
 
-  async createOne(user: IUserLogin): Promise<IUser> {
+  async create(user: IUserLogin): Promise<IVerifyReturn> {
     const response = await this.usersRepository.createOne(user);
-    delete response.password;
-    return response;
+    return {
+      authenticated: !!response,
+      role: response?.role || null,
+    };
   }
 }
