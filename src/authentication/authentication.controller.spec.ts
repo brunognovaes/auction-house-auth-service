@@ -53,7 +53,7 @@ describe('AuthenticationController', () => {
     expect(serviceSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should return a http error when passed invalid bodies', async () => {
+  it('should return a http error when passed invalid body', async () => {
     const serviceSpy = jest
       .spyOn(service, 'authenticate')
       .mockRejectedValue(authErrors.USER_NOT_FOUND);
@@ -61,6 +61,29 @@ describe('AuthenticationController', () => {
     expect(controller.authenticate(mockNotRegisteredUser)).rejects.toThrowError(
       HttpException,
     );
+    expect(serviceSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return a authenticate body when user is authorized', async () => {
+    const authorizedBody = {
+      authenticated: true,
+      role: 'user',
+    };
+    const serviceSpy = jest
+      .spyOn(service, 'verify')
+      .mockResolvedValue(Promise.resolve(authorizedBody));
+    const response = await controller.verify('token');
+
+    expect(response).toBeDefined();
+    expect(response).toBe(authorizedBody);
+  });
+
+  it('should return a http error when passed invalid jwt', async () => {
+    const serviceSpy = jest
+      .spyOn(service, 'verify')
+      .mockRejectedValue(Promise.reject(authErrors.USER_UNAUTHORIZED));
+
+    expect(controller.verify('token')).rejects.toThrowError(HttpException);
     expect(serviceSpy).toHaveBeenCalledTimes(1);
   });
 });
