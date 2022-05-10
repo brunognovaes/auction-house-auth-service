@@ -71,17 +71,18 @@ describe('AuthenticationController', () => {
     };
     const serviceSpy = jest
       .spyOn(service, 'verify')
-      .mockResolvedValue(Promise.resolve(authorizedBody));
+      .mockResolvedValue(authorizedBody);
     const response = await controller.verify('token');
 
     expect(response).toBeDefined();
     expect(response).toBe(authorizedBody);
+    expect(serviceSpy).toHaveBeenCalledTimes(1);
   });
 
   it('should return a http error when passed invalid jwt', async () => {
     const serviceSpy = jest
       .spyOn(service, 'verify')
-      .mockRejectedValue(Promise.reject(authErrors.USER_UNAUTHORIZED));
+      .mockRejectedValue(authErrors.USER_UNAUTHORIZED);
 
     expect(controller.verify('token')).rejects.toThrowError(HttpException);
     expect(serviceSpy).toHaveBeenCalledTimes(1);
