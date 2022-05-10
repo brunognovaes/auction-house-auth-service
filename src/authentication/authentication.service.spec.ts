@@ -4,7 +4,7 @@ import { AuthenticationRepositoryMock } from './authentication.repository.mock';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { ConfigModule } from '@nestjs/config';
-import authErrors from './authentication.errors';
+import authErrors, { AuthError } from './authentication.errors';
 
 const mockRegisteredUser = {
   email: 'bruno.gomes@gmail.com',
@@ -82,6 +82,9 @@ describe('AuthenticationService', () => {
   it('should not authenticate a non registered user', async () => {
     expect(async () => {
       await service.authenticate(mockNotRegisteredUser);
+    }).rejects.toBeInstanceOf(AuthError);
+    expect(async () => {
+      await service.authenticate(mockNotRegisteredUser);
     }).rejects.toBe(authErrors.USER_NOT_FOUND);
   });
 
@@ -92,6 +95,9 @@ describe('AuthenticationService', () => {
 
     expect(async () => {
       await service.authenticate(mockRegisteredUser);
+    }).rejects.toBeInstanceOf(AuthError);
+    expect(async () => {
+      await service.authenticate(mockRegisteredUser);
     }).rejects.toBe(authErrors.INVALID_CREDENTIALS);
   });
 
@@ -100,6 +106,9 @@ describe('AuthenticationService', () => {
       .spyOn(bcrypt, 'compare')
       .mockImplementation(() => Promise.resolve(true));
 
+    expect(async () => {
+      await service.authenticate(mockInactiveUser);
+    }).rejects.toBeInstanceOf(AuthError);
     expect(async () => {
       await service.authenticate(mockInactiveUser);
     }).rejects.toBe(authErrors.USER_INACTIVE);
@@ -130,11 +139,13 @@ describe('AuthenticationService', () => {
 
   it('should not return authenticated when passed a valid jwt', async () => {
     const token = jwt.sign('invalid token', process.env.SECRET);
-    const responseMock = { authenticated: false, role: null };
-    const response = await service.verify(token);
 
-    expect(response).toBeDefined();
-    expect(response).toEqual(responseMock);
+    expect(async () => await service.verify(token)).rejects.toBeInstanceOf(
+      AuthError,
+    );
+    expect(async () => await service.verify(token)).rejects.toBe(
+      authErrors.USER_UNAUTHORIZED,
+    );
   });
 
   it('should create an user', async () => {
