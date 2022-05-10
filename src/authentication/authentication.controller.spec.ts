@@ -53,7 +53,7 @@ describe('AuthenticationController', () => {
     expect(serviceSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should return a http error when passed unregistered user', async () => {
+  it('should return a http error when passed invalid bodies', async () => {
     const serviceSpy = jest
       .spyOn(service, 'authenticate')
       .mockRejectedValue(authErrors.USER_NOT_FOUND);
@@ -61,9 +61,6 @@ describe('AuthenticationController', () => {
     expect(controller.authenticate(mockNotRegisteredUser)).rejects.toThrowError(
       HttpException,
     );
-    expect(
-      controller.authenticate(mockNotRegisteredUser),
-    ).rejects.toHaveProperty('message', authErrors.USER_NOT_FOUND.message);
-    expect(serviceSpy).toHaveBeenCalledTimes(2);
+    expect(serviceSpy).toHaveBeenCalledTimes(1);
   });
 });
