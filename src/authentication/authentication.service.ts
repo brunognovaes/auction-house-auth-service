@@ -45,9 +45,13 @@ export class AuthenticationService implements IAuthenticationService {
     const userId = response?.user_id;
     const user = await this.usersRepository.findOneById(userId);
 
+    if (!user || !user.active) {
+      throw errors.USER_UNAUTHORIZED;
+    }
+
     return {
-      authenticated: !!user,
-      role: user?.role || null,
+      authenticated: true,
+      role: user.role,
     };
   }
 

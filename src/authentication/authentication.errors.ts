@@ -17,5 +17,9 @@ export default {
     HttpStatus.UNAUTHORIZED,
     'Invalid password',
   ),
+  USER_UNAUTHORIZED: new AuthError(
+    HttpStatus.UNAUTHORIZED,
+    'User unauthorized',
+  ),
   USER_INACTIVE: new AuthError(HttpStatus.FORBIDDEN, 'User inactive'),
 };
