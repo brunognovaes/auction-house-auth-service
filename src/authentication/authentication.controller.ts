@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpException,
   HttpStatus,
@@ -12,7 +11,6 @@ import {
 import { IError } from 'src/errors/error';
 import { AuthenticationService } from './authentication.service';
 import { IUserLogin, IVerifyReturn } from './authentication.structure';
-import AuthErros from './authentication.errors';
 import { HttpExceptionFilter } from 'src/filters/http-exception.filter';
 
 @Injectable()
@@ -52,11 +50,5 @@ export class AuthenticationController {
     } catch (error: any) {
       throw new HttpException(error, error.code);
     }
-  }
-
-  @Get('test')
-  @HttpCode(HttpStatus.OK)
-  async test(): Promise<string> {
-    throw new HttpException(AuthErros.USER_NOT_FOUND, 404);
   }
 }
