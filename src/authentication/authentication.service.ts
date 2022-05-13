@@ -41,18 +41,22 @@ export class AuthenticationService implements IAuthenticationService {
   }
 
   async verify(token: string): Promise<IVerifyReturn> {
-    const response = jwt.verify(token, process.env.SECRET);
-    const userId = response?.user_id;
-    const user = await this.usersRepository.findOneById(userId);
+    try {
+      const response = jwt.verify(token, process.env.SECRET);
+      const userId = response?.user_id;
+      const user = await this.usersRepository.findOneById(userId);
 
-    if (!user || !user.active) {
-      throw errors.USER_UNAUTHORIZED;
+      if (!user || !user.active) {
+        throw errors.USER_UNAUTHORIZED;
+      }
+
+      return {
+        authenticated: true,
+        role: user.role,
+      };
+    } catch (_) {
+      throw errors.INVALID_TOKEN;
     }
-
-    return {
-      authenticated: true,
-      role: user.role,
-    };
   }
 
   async create(user: IUserLogin): Promise<true> {

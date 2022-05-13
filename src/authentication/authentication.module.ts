@@ -5,6 +5,16 @@ import { AuthenticationService } from './authentication.service';
 
 @Module({
   controllers: [AuthenticationController],
-  providers: [AuthenticationService],
+  providers: [
+    AuthenticationService,
+    {
+      provide: 'INITIAL_VALUES',
+      useValue: [],
+    },
+    {
+      provide: 'USERS_REPOSITORY',
+      useClass: AuthenticationRepositoryMock,
+    },
+  ],
 })
 export class AuthenticationModule {}

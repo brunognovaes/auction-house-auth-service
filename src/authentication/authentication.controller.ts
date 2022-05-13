@@ -8,12 +8,14 @@ import {
   Post,
   UseFilters,
   UseInterceptors,
+  ValidationPipe,
 } from '@nestjs/common';
 import { IError } from 'src/errors/error';
 import { AuthenticationService } from './authentication.service';
-import { IUserLogin, IVerifyReturn } from './authentication.structure';
+import { IVerifyReturn } from './authentication.structure';
 import { HttpExceptionFilter } from 'src/filters/http-exception.filter';
 import { ResponseInterceptor } from 'src/interceptors/response.interceptor';
+import { TokenDto, UserDto } from './authentication.dto';
 
 @Injectable()
 @Controller('auth')
@@ -24,29 +26,29 @@ export class AuthenticationController {
 
   @Post()
   @HttpCode(HttpStatus.OK)
-  async authenticate(@Body() data: IUserLogin): Promise<string | IError> {
+  async authenticate(@Body() data: UserDto): Promise<string | IError> {
     try {
       const response = await this.usersService.authenticate(data);
       return response;
-    } catch (error: any) {
-      throw new HttpException(error.message, error.code);
+    } catch (error) {
+      throw new HttpException(error, error.code);
     }
   }
 
   @Post('verify')
   @HttpCode(HttpStatus.OK)
-  async verify(@Body() token: string): Promise<IVerifyReturn | IError> {
+  async verify(@Body() data: TokenDto): Promise<IVerifyReturn | IError> {
     try {
-      const response = await this.usersService.verify(token);
+      const response = await this.usersService.verify(data.token);
       return response;
     } catch (error: any) {
-      throw new HttpException(error.message, error.code);
+      throw new HttpException(error, error.code);
     }
   }
 
   @Post('create')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() data: IUserLogin): Promise<true> {
+  async create(@Body() data: UserDto): Promise<true> {
     try {
       await this.usersService.create(data);
       return true;

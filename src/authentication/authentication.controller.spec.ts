@@ -72,7 +72,8 @@ describe('AuthenticationController', () => {
     const serviceSpy = jest
       .spyOn(service, 'verify')
       .mockResolvedValue(authorizedBody);
-    const response = await controller.verify('token');
+    const token = 'token';
+    const response = await controller.verify({ token });
 
     expect(response).toBeDefined();
     expect(response).toBe(authorizedBody);
@@ -83,8 +84,9 @@ describe('AuthenticationController', () => {
     const serviceSpy = jest
       .spyOn(service, 'verify')
       .mockRejectedValue(authErrors.USER_UNAUTHORIZED);
+    const token = 'token';
 
-    expect(controller.verify('token')).rejects.toThrowError(HttpException);
+    expect(controller.verify({ token })).rejects.toThrowError(HttpException);
     expect(serviceSpy).toHaveBeenCalledTimes(1);
   });
 

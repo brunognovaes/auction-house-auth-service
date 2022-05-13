@@ -32,4 +32,9 @@ export default {
     HttpStatus.FORBIDDEN,
     'User inactive',
   ),
+  INVALID_TOKEN: new AuthError(
+    'auth.token.invalid',
+    HttpStatus.BAD_REQUEST,
+    'Invalid token',
+  ),
 };
