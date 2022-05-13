@@ -7,15 +7,18 @@ import {
   Injectable,
   Post,
   UseFilters,
+  UseInterceptors,
 } from '@nestjs/common';
 import { IError } from 'src/errors/error';
 import { AuthenticationService } from './authentication.service';
 import { IUserLogin, IVerifyReturn } from './authentication.structure';
 import { HttpExceptionFilter } from 'src/filters/http-exception.filter';
+import { ResponseInterceptor } from 'src/interceptors/response.interceptor';
 
 @Injectable()
 @Controller('auth')
 @UseFilters(new HttpExceptionFilter())
+@UseInterceptors(new ResponseInterceptor())
 export class AuthenticationController {
   constructor(private usersService: AuthenticationService) {}
 
