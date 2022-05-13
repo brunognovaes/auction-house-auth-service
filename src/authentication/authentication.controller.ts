@@ -37,4 +37,15 @@ export class AuthenticationController {
       throw new HttpException(error.message, error.code);
     }
   }
+
+  @Post('create')
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() data: IUserLogin): Promise<true> {
+    try {
+      await this.usersService.create(data);
+      return true;
+    } catch (error: any) {
+      throw new HttpException(error.message, error.code);
+    }
+  }
 }
