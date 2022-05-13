@@ -87,4 +87,17 @@ describe('AuthenticationController', () => {
     expect(controller.verify('token')).rejects.toThrowError(HttpException);
     expect(serviceSpy).toHaveBeenCalledTimes(1);
   });
+
+  it('should create a user', async () => {
+    const createdResponseBody = {
+      data: null,
+      message: 'User created',
+    };
+    const serviceSpy = jest.spyOn(service, 'create').mockResolvedValue(true);
+
+    expect(controller.create(mockValidLoginBody)).resolves.toBe(
+      createdResponseBody,
+    );
+    expect(serviceSpy).toHaveBeenCalledTimes(1);
+  });
 });
