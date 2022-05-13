@@ -45,7 +45,7 @@ export class AuthenticationController {
       await this.usersService.create(data);
       return true;
     } catch (error: any) {
-      throw new HttpException(error.message, error.code);
+      throw new HttpException(error, error.code);
     }
   }
 }

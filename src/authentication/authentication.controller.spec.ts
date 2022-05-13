@@ -89,15 +89,9 @@ describe('AuthenticationController', () => {
   });
 
   it('should create a user', async () => {
-    const createdResponseBody = {
-      data: null,
-      message: 'User created',
-    };
     const serviceSpy = jest.spyOn(service, 'create').mockResolvedValue(true);
 
-    expect(controller.create(mockValidLoginBody)).resolves.toBe(
-      createdResponseBody,
-    );
+    expect(controller.create(mockValidLoginBody)).resolves.toBe(true);
     expect(serviceSpy).toHaveBeenCalledTimes(1);
   });
 });
